@@ -15,7 +15,7 @@ A "Zero-Touch" monitoring solution built with Python. It runs as a background da
 1. Clone the repository:
    ```bash
    git clone [https://github.com/YOUR_USERNAME/Ericsson_System_Monitor.git](https://github.com/YOUR_USERNAME/Ericsson_System_Monitor.git)
-   cd Ericsson_System_Monitor
+   cd ZeroTouch-Monitor
 
    Create a virtual environment:
    python3 -m venv venv
