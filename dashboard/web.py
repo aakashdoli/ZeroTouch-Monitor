@@ -15,12 +15,15 @@ from monitor.metrics import MetricsCollector, kill_process
 
 
 def send_mac_notification(title: str, message: str):
-    """Fire Mac notification in a background thread so it never blocks the dashboard."""
+    """Fire Mac notification in background thread using a temp AppleScript file."""
     def _notify():
         try:
-            script = f'display notification "{message}" with title "{title}" sound name "Basso"'
-            subprocess.run(["osascript", "-e", script], timeout=5)
-        except Exception:
+            # Write to temp file to avoid any quote/encoding issues
+            script_path = "/tmp/ztm_notify.scpt"
+            with open(script_path, "w") as f:
+                f.write(f'display notification "{message}" with title "{title}" sound name "Basso"\n')
+            subprocess.run(["osascript", script_path], timeout=5)
+        except Exception as e:
             pass
     threading.Thread(target=_notify, daemon=True).start()
 
@@ -64,7 +67,7 @@ if "cpu_history" not in st.session_state:
     st.session_state.net_sent_history = deque(maxlen=HISTORY_LEN)
     st.session_state.net_recv_history = deque(maxlen=HISTORY_LEN)
     st.session_state.time_history = deque(maxlen=HISTORY_LEN)
-    st.session_state.alerted = {}        # { metric_key: last_alert_timestamp }
+    st.session_state.alerted = {}
     st.session_state.kill_message = None
 
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
@@ -84,12 +87,13 @@ with st.sidebar:
         if kill_pid:
             success, msg = kill_process(int(kill_pid))
             st.session_state.kill_message = (success, msg)
+            clean_msg = msg.replace('"', '').replace("'", "")
             send_mac_notification(
-                "🔫 ZeroTouch-Monitor: Process Killed" if success else "❌ Kill Failed",
-                msg
+                "Process Killed" if success else "Kill Failed",
+                clean_msg
             )
         else:
-            st.session_state.kill_message = (False, "❌ Please enter a PID first.")
+            st.session_state.kill_message = (False, "Please enter a PID first.")
     st.markdown("---")
     st.markdown("**ZeroTouch-Monitor v1.0**")
     st.markdown("Automated system monitoring with zero touch.")
@@ -106,8 +110,8 @@ st.session_state.net_recv_history.append(snapshot.network.bytes_recv_mb)
 st.session_state.time_history.append(now_str)
 times = list(st.session_state.time_history)
 
-# ─── Alert Logic with Cooldown ───────────────────────────────────────────────
-COOLDOWN = 60   # 1 minute between repeated alerts for same metric
+# ─── Alert Logic ─────────────────────────────────────────────────────────────
+COOLDOWN = 300
 
 def should_alert(key):
     last = st.session_state.alerted.get(key, 0)
@@ -122,25 +126,25 @@ if snapshot.cpu.percent >= cpu_threshold:
     alerts.append(f"🔴 CPU at **{snapshot.cpu.percent:.1f}%** (threshold: {cpu_threshold}%)")
     if should_alert("cpu"):
         send_mac_notification(
-            "⚠️ ZeroTouch-Monitor: CPU Alert",
-            f"CPU is at {snapshot.cpu.percent:.1f}% — threshold is {cpu_threshold}%"
+            "ZeroTouch-Monitor: CPU Alert",
+            f"CPU is at {snapshot.cpu.percent:.0f}% threshold is {cpu_threshold}%"
         )
 
 if snapshot.memory.percent >= mem_threshold:
     alerts.append(f"🔴 Memory at **{snapshot.memory.percent:.1f}%** (threshold: {mem_threshold}%)")
     if should_alert("memory"):
         send_mac_notification(
-            "⚠️ ZeroTouch-Monitor: Memory Alert",
-            f"Memory is at {snapshot.memory.percent:.1f}% — threshold is {mem_threshold}%"
+            "ZeroTouch-Monitor: Memory Alert",
+            f"Memory is at {snapshot.memory.percent:.0f}% threshold is {mem_threshold}%"
         )
 
 for part in snapshot.disk.partitions:
     if part["percent"] >= disk_threshold:
-        alerts.append(f"🔴 Disk `{part['mountpoint']}` at **{part['percent']:.1f}%** (threshold: {disk_threshold}%)")
+        alerts.append(f"🔴 Disk `{part['mountpoint']}` at **{part['percent']:.1f}%**")
         if should_alert(f"disk_{part['mountpoint']}"):
             send_mac_notification(
-                "⚠️ ZeroTouch-Monitor: Disk Alert",
-                f"Disk {part['mountpoint']} at {part['percent']:.1f}%"
+                "ZeroTouch-Monitor: Disk Alert",
+                f"Disk at {part['percent']:.0f}% threshold is {disk_threshold}%"
             )
 
 # ─── Header ──────────────────────────────────────────────────────────────────
@@ -154,7 +158,7 @@ with col_time:
 
 st.markdown("---")
 
-# ─── Kill / Alert Banners ─────────────────────────────────────────────────────
+# ─── Banners ─────────────────────────────────────────────────────────────────
 if st.session_state.kill_message:
     success, msg = st.session_state.kill_message
     css_class = "kill-success" if success else "alert-box"
