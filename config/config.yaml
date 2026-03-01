@@ -1,0 +1,25 @@
+# ZeroTouch-Monitor Configuration
+# Copy this file and edit as needed.
+
+interval_seconds: 2
+log_dir: logs
+
+alerts:
+  cpu_threshold: 85.0
+  memory_threshold: 85.0
+  disk_threshold: 90.0
+  cooldown_seconds: 300   # Minimum seconds between repeated alerts for same metric
+  desktop_enabled: true   # Requires 'plyer' package
+
+  email:
+    enabled: false
+    smtp_host: smtp.gmail.com
+    smtp_port: 587
+    username: your_email@gmail.com
+    password: your_app_password    # Use Gmail App Password
+    recipients:
+      - alert_recipient@example.com
+
+  slack:
+    enabled: false
+    webhook_url: https://hooks.slack.com/services/YOUR/WEBHOOK/URL
