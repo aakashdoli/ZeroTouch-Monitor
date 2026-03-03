@@ -1,5 +1,13 @@
+# Core
 psutil>=5.9.0
+pyyaml>=6.0
+
+# Terminal dashboard
 rich>=13.0.0
+
+# Web dashboard
 streamlit>=1.30.0
 plotly>=5.18.0
-pyyaml>=6.0
+
+# Windows notifications (optional - only needed on Windows)
+# win10toast>=0.9; sys_platform == "win32"
