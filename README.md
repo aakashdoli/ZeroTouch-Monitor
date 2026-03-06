@@ -1,86 +1,191 @@
+<div align="center">
+
 # ⚡ ZeroTouch-Monitor
 
-> **Automated Python System Monitor with Real-Time Alerts and Dual Dashboard**
+### Production-Grade System Monitoring with Intelligent Process Management
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-red?logo=streamlit)](https://streamlit.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](Dockerfile)
-[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://github.com/aakashdoli/ZeroTouch-Monitor)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Platform](https://img.shields.io/badge/Platform-Mac%20%7C%20Windows%20%7C%20Linux-lightgrey?style=for-the-badge)](https://github.com/aakashdoli/ZeroTouch-Monitor)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-ZeroTouch-Monitor is a **production-grade, zero-configuration system monitoring tool** built in Python. It tracks CPU, Memory, Disk, and Network I/O in real-time and fires instant alerts via Email, Slack, and Desktop notifications — all from a beautiful terminal or web dashboard.
+**Monitor every machine in your infrastructure from one dashboard.**  
+**Intelligently kill idle CPU hogs without disrupting your active work.**
+
+[Features](#-features) • [Demo](#-demo) • [Quick Start](#-quick-start) • [Architecture](#-architecture) • [Multi-Machine](#-multi-machine-setup)
 
 ---
 
-## 🖥 Dashboard Preview
+![ZeroTouch-Monitor Dashboard](https://raw.githubusercontent.com/aakashdoli/ZeroTouch-Monitor/main/docs/dashboard.png)
 
-### Terminal Dashboard (Rich)
-```
-┌────────────────────────────────────────────────────────────────┐
-│         ⚡ ZeroTouch-Monitor | Host: myserver | 14:23:01       │
-├───────────────────────────────┬────────────────────────────────┤
-│  🖥  CPU                      │  🧠  Memory                    │
-│  Overall       87.3%  🔴      │  Usage  62.1%  (9.9/16.0 GB)  │
-│  Frequency     3600 MHz       │  Available     6.1 GB          │
-│  Load Avg      1.2/0.9/0.8    │  Swap   0.0%   (0.0/2.0 GB)   │
-│  Per Core  C0:90% C1:84% ...  │                                │
-├───────────────────────────────┴────────────────────────────────┤
-│  💾  Disk                                                       │
-│  /         ext4   50GB used / 100GB total   50.0%  🟢          │
-│  /home      ext4  120GB used / 500GB total  24.0%  🟢          │
-├────────────────────────────────────────────────────────────────┤
-│  🌐  Network I/O                                                │
-│  Sent: 0.0023 MB  |  Recv: 0.0145 MB  |  Errors: 0            │
-└────────────────────────────────────────────────────────────────┘
-```
+</div>
 
-### Web Dashboard (Streamlit)
-- 📊 Live line charts for CPU, Memory, Network over time
-- 🔴 Alert banners when thresholds are breached
-- 💾 Disk partition table
-- 🖥 Per-core CPU meters
-- ⚙️ Configurable thresholds via sidebar sliders
+---
+
+## 🚀 The Problem
+
+Every developer has experienced this:
+- Your laptop is **burning hot**, fan running at max
+- You're in the middle of **important work** in VS Code
+- Some background app is **eating 80% of your CPU**
+- You have no idea **which app** or **why**
+
+Traditional monitors like Mac Activity Monitor just **show** the problem.  
+**ZeroTouch-Monitor solves it — automatically.**
 
 ---
 
 ## ✨ Features
 
-| Feature | Details |
+### 🖥 Real-Time Monitoring
+- **CPU** — overall usage, per-core breakdown, frequency, load average
+- **Memory** — used/available RAM, swap usage
+- **Disk** — partition usage, read/write I/O speeds
+- **Network** — bytes sent/received, packet counts, error rates
+
+### 🧠 Smart Process Manager *(The killer feature)*
+> Not all process killers are equal. ZeroTouch understands **context**.
+
+| Scenario | What ZeroTouch Does |
 |---|---|
-| **Metrics** | CPU %, per-core, frequency, load avg · Memory, swap · Disk partitions, I/O · Network sent/recv/errors |
-| **Alerts** | Email (SMTP/Gmail) · Slack (Webhook) · Desktop notifications |
-| **Alert Cooldown** | Configurable cooldown to prevent alert flooding (default: 5 min) |
-| **Terminal Dashboard** | Live Rich-powered terminal UI, color-coded by severity |
-| **Web Dashboard** | Streamlit + Plotly with auto-refresh and live charts |
-| **Config** | YAML file OR environment variables — no code changes needed |
-| **Docker** | Single-command deployment with Docker Compose |
-| **Logging** | Daily rotating log files in `logs/` directory |
+| Chrome is your active app | 🛡 **PROTECTED** — never touched |
+| VS Code open, you're in Chrome for 5 min | 🛡 **PROTECTED** — used within 30 min |
+| Zoom Updater running in background for 2 hours | 🔴 **KILL CANDIDATE** |
+| System daemon eating CPU | 🛡 **PROTECTED** — system process |
+
+**Dual-Signal Intelligence:**
+- **Signal 1** — User Interaction: Has the user touched this app in the last 30 minutes?
+- **Signal 2** — CPU Idle: Has this process had < 2% CPU for 4+ continuous minutes?
+
+Both must be true before any process becomes a kill candidate.
+
+### 🌐 Multi-Machine Monitoring
+Monitor your **entire infrastructure** from one central dashboard:
+```
+[MacBook Pro]  ──→  ZeroTouch Central Server  ←──  [Windows PC]
+[Linux Server] ──→         Dashboard          ←──  [Office Mac]
+```
+
+### 🔔 Smart Alerts
+- Desktop notifications (Mac/Linux/Windows)
+- Configurable CPU, Memory, Disk thresholds
+- 5-minute cooldown to prevent notification spam
+
+### 🔫 Remote Process Kill
+- Kill any process on any connected machine from the central dashboard
+- Smart Clean — auto-kill idle CPU hogs remotely with one click
+
+### 🐳 Docker Support
+```bash
+docker compose up zerotouch-web
+```
 
 ---
 
-## 🚀 Quick Start
+## 📸 Demo
+
+### Single Machine Dashboard
+![Single Dashboard](https://raw.githubusercontent.com/aakashdoli/ZeroTouch-Monitor/main/docs/dashboard.png)
+
+### 🔥 Top Processes — Who is eating your CPU?
+![Process Manager](https://raw.githubusercontent.com/aakashdoli/ZeroTouch-Monitor/main/docs/process_manager.png)
+
+### 💾 Disk Partitions + CPU Per Core
+![Disk and Core](https://raw.githubusercontent.com/aakashdoli/ZeroTouch-Monitor/main/docs/multi_dashboard.png)
+
+### 🌐 Multi-Machine Central Dashboard
+![Central Dashboard](https://raw.githubusercontent.com/aakashdoli/ZeroTouch-Monitor/main/docs/central_dashboard.png)
+
+### 🔍 Remote Machine Details + Process Kill
+![Machine Details](https://raw.githubusercontent.com/aakashdoli/ZeroTouch-Monitor/main/docs/machine_details.png)
+
+---
+
+## ⚡ Quick Start
 
 ### 1. Clone & Install
 ```bash
 git clone https://github.com/aakashdoli/ZeroTouch-Monitor.git
 cd ZeroTouch-Monitor
+python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Run Terminal Dashboard
+### 2. Run Web Dashboard
 ```bash
-python main.py
-```
-
-### 3. Run Web Dashboard
-```bash
-streamlit run dashboard/web.py
+PYTHONPATH=$(pwd) streamlit run dashboard/web.py
 # Open http://localhost:8501
 ```
 
-### 4. Run Both Simultaneously
+### 3. Run Terminal Dashboard
 ```bash
-python main.py --mode both
+PYTHONPATH=$(pwd) python main.py
+```
+
+---
+
+## 🌐 Multi-Machine Setup
+
+### Step 1 — Start Central Server (on your main machine)
+```bash
+python server/server.py
+# Server running at http://0.0.0.0:8000
+```
+
+### Step 2 — Start Central Dashboard
+```bash
+PYTHONPATH=$(pwd) streamlit run dashboard/multi_dashboard.py --server.port 8502
+# Open http://localhost:8502
+```
+
+### Step 3 — Connect Any Machine (one command!)
+```bash
+# Mac / Linux:
+curl -sSL http://YOUR_SERVER_IP:8000/install.sh | bash
+
+# Windows:
+# Open browser → http://YOUR_SERVER_IP:8000/install.py → save → double-click
+```
+
+That's it. The machine appears in your dashboard instantly. ✅
+
+---
+
+## 🏗 Architecture
+
+```
+ZeroTouch-Monitor/
+│
+├── monitor/
+│   ├── metrics.py          # psutil-based metrics collector
+│   │                       # CPU, Memory, Disk, Network, Top Processes
+│   └── smart_engine.py     # Intelligent process classification engine
+│                           # Dual-signal: interaction time + CPU idle time
+│
+├── dashboard/
+│   ├── web.py              # Streamlit single-machine dashboard
+│   ├── terminal.py         # Rich library terminal dashboard
+│   └── multi_dashboard.py  # Multi-machine central dashboard
+│
+├── server/
+│   └── server.py           # FastAPI central server
+│                           # Receives metrics from all agents
+│
+├── agent/
+│   └── agent.py            # Lightweight agent (runs on each machine)
+│                           # Sends metrics to central server every 2s
+│
+├── installer/
+│   ├── install.sh          # Mac/Linux one-line installer
+│   └── install_windows.py  # Windows installer
+│
+├── alerts/
+│   └── alerter.py          # Multi-channel alert system
+│
+└── config/
+    └── config.yaml         # Thresholds and notification config
 ```
 
 ---
@@ -90,169 +195,127 @@ python main.py --mode both
 Edit `config/config.yaml`:
 
 ```yaml
-interval_seconds: 2     # How often to refresh metrics
-
 alerts:
-  cpu_threshold: 85.0   # Alert when CPU > 85%
-  memory_threshold: 85.0
-  disk_threshold: 90.0
-  cooldown_seconds: 300 # Minimum 5 min between same alerts
-  desktop_enabled: true
+  cpu_threshold: 85.0       # Alert when CPU > 85%
+  memory_threshold: 85.0    # Alert when Memory > 85%
+  disk_threshold: 90.0      # Alert when Disk > 90%
 
   email:
-    enabled: true
+    enabled: false
     smtp_host: smtp.gmail.com
-    smtp_port: 587
-    username: your_email@gmail.com
-    password: your_app_password   # Gmail App Password
-    recipients:
-      - you@example.com
+    username: your@email.com
+    password: your_app_password
+    recipients: [alert@company.com]
 
   slack:
-    enabled: true
-    webhook_url: https://hooks.slack.com/services/YOUR/WEBHOOK/URL
-```
-
-### Environment Variables (for Docker/CI)
-```bash
-export EMAIL_USERNAME=your@gmail.com
-export EMAIL_PASSWORD=your_app_password
-export EMAIL_RECIPIENTS=alert@company.com
-export SLACK_WEBHOOK_URL=https://hooks.slack.com/...
+    enabled: false
+    webhook_url: https://hooks.slack.com/your/webhook
 ```
 
 ---
 
-## 🐳 Docker Deployment
+## 🧠 Smart Kill Logic
 
-### Web Dashboard Only
-```bash
-docker compose up zerotouch-web
-# Open http://localhost:8501
-```
+```python
+# A process becomes a KILL CANDIDATE only when ALL 3 are true:
 
-### With Custom Config
-```bash
-# Create .env file with your secrets
-echo "SLACK_WEBHOOK_URL=https://hooks.slack.com/..." > .env
-docker compose up
-```
+1. ✅ CPU idle for 4+ continuous minutes (< 2% CPU)
+2. ✅ User hasn't interacted with this app in 30+ minutes
+3. ✅ Not a system process (kernel, launchd, svchost, etc.)
 
----
-
-## 📁 Project Structure
-
-```
-ZeroTouch-Monitor/
-├── main.py                    # Entry point & CLI
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-│
-├── monitor/
-│   ├── metrics.py             # Core metrics collection (psutil)
-│   └── logger.py             # Logging setup
-│
-├── alerts/
-│   └── alerter.py            # Email, Slack, Desktop alerters + AlertManager
-│
-├── dashboard/
-│   ├── terminal.py           # Rich terminal live dashboard
-│   └── web.py                # Streamlit web dashboard
-│
-├── config/
-│   ├── config.yaml           # Default configuration
-│   └── config_loader.py      # Config loader (YAML + env vars)
-│
-└── logs/                     # Auto-created daily log files
+# Your active work is ALWAYS protected:
+- Currently focused app        → 🛡 PROTECTED
+- Used within last 30 minutes  → 🛡 PROTECTED
+- System/OS process            → 🛡 PROTECTED
 ```
 
 ---
 
-## 🛠 CLI Reference
+## 🆚 vs Mac Activity Monitor
 
-```bash
-python main.py [OPTIONS]
-
-Options:
-  --mode      terminal (default) | web | both
-  --config    Path to config YAML (default: config/config.yaml)
-  --interval  Refresh interval in seconds (overrides config)
-
-Examples:
-  python main.py                          # Terminal dashboard
-  python main.py --mode both              # Terminal + Web
-  python main.py --interval 5             # 5-second refresh
-  python main.py --config /etc/ztm.yaml  # Custom config path
-```
-
----
-
-## 📬 Alert Channels Setup
-
-### Gmail Email Alerts
-1. Enable 2FA on your Google account
-2. Go to [Google App Passwords](https://myaccount.google.com/apppasswords)
-3. Generate a password for "Mail"
-4. Use that password in `config.yaml`
-
-### Slack Alerts
-1. Go to [Slack API](https://api.slack.com/apps) → Create New App
-2. Enable **Incoming Webhooks**
-3. Add webhook to your channel
-4. Paste the URL in `config.yaml`
-
-### Desktop Notifications
-Automatically works on Windows, macOS, and Linux with the `plyer` package (already in requirements).
+| Feature | Mac Activity Monitor | ZeroTouch-Monitor |
+|---|---|---|
+| Real-time CPU/Memory | ✅ | ✅ |
+| Per-core breakdown | ✅ | ✅ |
+| Kill processes | ✅ Manual only | ✅ Manual + **Auto** |
+| Web dashboard | ❌ | ✅ |
+| Remote monitoring | ❌ | ✅ |
+| Email/Slack alerts | ❌ | ✅ |
+| Multi-machine | ❌ | ✅ |
+| Windows/Linux support | ❌ | ✅ |
+| Smart auto-kill | ❌ | ✅ |
+| One-line install | ❌ | ✅ |
+| Remote process kill | ❌ | ✅ |
 
 ---
 
-## 🧰 Tech Stack
+## 🛠 Tech Stack
 
-| Tool | Purpose |
+| Component | Technology |
 |---|---|
-| `psutil` | Cross-platform system metrics |
-| `rich` | Beautiful terminal UI |
-| `streamlit` | Web dashboard framework |
-| `plotly` | Interactive charts |
-| `pyyaml` | Config file parsing |
-| `plyer` | Cross-platform desktop notifications |
+| Metrics Collection | `psutil` |
+| Web Dashboard | `Streamlit` + `Plotly` |
+| Terminal Dashboard | `Rich` |
+| Central Server | `FastAPI` + `uvicorn` |
+| Process Intelligence | Custom dual-signal engine |
+| Notifications | `osascript` / `notify-send` / PowerShell |
+| Containerization | `Docker` + `docker-compose` |
+
+---
+
+## 📦 Requirements
+
+```
+Python 3.9+
+psutil >= 5.9.0
+streamlit >= 1.30.0
+plotly >= 5.18.0
+fastapi >= 0.104.0
+uvicorn >= 0.24.0
+rich >= 13.0.0
+pyyaml >= 6.0
+```
 
 ---
 
 ## 🗺 Roadmap
 
-- [ ] Prometheus metrics export endpoint
-- [ ] Grafana dashboard integration
-- [ ] Historical data with SQLite storage
-- [ ] Process-level monitoring (top N processes by CPU/mem)
-- [ ] HTTP/API endpoint health checks
-- [ ] Multi-host monitoring support
+- [x] Real-time single machine monitoring
+- [x] Smart process manager with intelligent kill
+- [x] Multi-machine central server + dashboard
+- [x] One-line cross-platform installer
+- [x] Remote process kill from central dashboard
+- [x] Cross-platform notifications (Mac/Linux/Windows)
+- [ ] Historical data storage (SQLite/PostgreSQL)
+- [ ] Anomaly detection with ML
+- [ ] Mobile-friendly dashboard
+- [ ] `pip install zerotouch-monitor`
+- [ ] SaaS deployment with auth
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repo
-2. Create your feature branch: `git checkout -b feature/my-feature`
-3. Commit changes: `git commit -m "Add my feature"`
-4. Push: `git push origin feature/my-feature`
-5. Open a Pull Request
+Pull requests are welcome! For major changes, open an issue first.
+
+```bash
+git clone https://github.com/aakashdoli/ZeroTouch-Monitor.git
+cd ZeroTouch-Monitor
+pip install -r requirements.txt
+```
 
 ---
 
 ## 📄 License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE)
 
 ---
 
-## 👨‍💻 Author
+<div align="center">
 
-**Aakash Doli**
-- GitHub: [@aakashdoli](https://github.com/aakashdoli)
-- LinkedIn: [aakashdoli](https://linkedin.com/in/aakashdoli)
+**Built with ❤️ by [Aakash Doli](https://github.com/aakashdoli)**
 
----
+⭐ Star this repo if you found it useful!
 
-> ⭐ If you found this useful, give it a star on GitHub!
+</div>
